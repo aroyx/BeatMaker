@@ -1,5 +1,9 @@
 add_executable("${PROJECT_NAME}" 
     main.c
+    global.c
+    global.h
+    window/window.c
+    window/window.h
 )
 
 if(STATIC_BUILD)
