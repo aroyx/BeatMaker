@@ -1,5 +1,8 @@
 #include <SDL3/SDL.h>
 
+#include <cimgui.h>
+#include <cimgui_impl.h>
+
 #include "window.h"
 #include "../global.h"
 
@@ -7,8 +10,9 @@ bool init_window()
 {
     SDL_SetHint(SDL_HINT_VIDEO_X11_NET_WM_BYPASS_COMPOSITOR, "0");
 
-    global.window = SDL_CreateWindow("BeatMaker", 1200, 680,  //
-                                     SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
+    float main_scale = SDL_GetDisplayContentScale(SDL_GetPrimaryDisplay());
+    global.window    = SDL_CreateWindow("BeatMaker", 1200 * main_scale, 680 * main_scale,  //
+                                        SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
     if (!global.window)
     {
         SDL_LogError(SDL_LOG_CATEGORY_VIDEO, "Unable to create Window!\nSDL_Error: %s",
@@ -23,14 +27,34 @@ bool init_window()
                      SDL_GetError());
         return false;
     }
-
     SDL_SetRenderVSync(global.renderer, 1);
 
+    // Setup Dear ImGui context
+    igCreateContext(NULL);
+    ImGuiIO *io = igGetIO_Nil();
+    (void)io;
+    io->ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+    io->ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+
+    igStyleColorsDark(NULL);
+
+    ImGuiStyle *style = igGetStyle();
+    ImGuiStyle_ScaleAllSizes(style, main_scale);
+    style->FontScaleDpi         = main_scale;
+    io->ConfigDpiScaleFonts     = true;
+    io->ConfigDpiScaleViewports = true;
+
+    ImGui_ImplSDL3_InitForSDLRenderer(global.window, global.renderer);
+    ImGui_ImplSDLRenderer3_Init(global.renderer);
     return true;
 }
 
 void quit_window()
 {
+    ImGui_ImplSDL3_Shutdown();
+    ImGui_ImplSDLRenderer3_Shutdown();
+    igDestroyContext(NULL);
+
     SDL_DestroyRenderer(global.renderer);
     SDL_DestroyWindow(global.window);
     global.window = nullptr;
@@ -42,6 +66,7 @@ void poll_events()
 {
     while (SDL_PollEvent(&event))
     {
+        ImGui_ImplSDL3_ProcessEvent(&event);
         if (event.type == SDL_EVENT_QUIT) { global.quit = true; }
     }
 }

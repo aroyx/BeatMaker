@@ -1,6 +1,9 @@
 #include <stdlib.h>
 #include <SDL3/SDL.h>
 
+#include <cimgui.h>
+#include <cimgui_impl.h>
+
 #include "global.h"
 #include "window/window.h"
 
@@ -34,7 +37,16 @@ int main()
         SDL_SetRenderDrawColor(global.renderer, 10, 160, 230, 255);
         SDL_RenderClear(global.renderer);
 
+        ImGui_ImplSDL3_NewFrame();
+        ImGui_ImplSDLRenderer3_NewFrame();
+        igNewFrame();
 
+        igShowDemoWindow(nullptr);
+
+        igRender();
+        ImDrawData* draw_data = igGetDrawData();
+        const bool is_minimized = (draw_data->DisplaySize.x <= 0.0f || draw_data->DisplaySize.y <= 0.0f);
+        ImGui_ImplSDLRenderer3_RenderDrawData(draw_data, global.renderer);
         SDL_RenderPresent(global.renderer);
     }
 

@@ -1,0 +1,55 @@
+diff --git i/cimgui.cpp w/cimgui.cpp
+index eeadfec..7a441f8 100644
+--- i/cimgui.cpp
++++ w/cimgui.cpp
+@@ -4,8 +4,8 @@
+ //with imgui_freetype.h api
+ //docking branch
+ 
+-#include "./imgui/imgui.h"
+-#include "./imgui/imgui_internal.h"
++#include "imgui.h"
++#include "imgui_internal.h"
+ #include "cimgui.h"
+ 
+ 
+diff --git i/cimgui_impl.cpp w/cimgui_impl.cpp
+index a3ee1a0..3c86506 100644
+--- i/cimgui_impl.cpp
++++ w/cimgui_impl.cpp
+@@ -1,8 +1,8 @@
+-#include "./imgui/imgui.h"
++#include "imgui.h"
+ #ifdef IMGUI_ENABLE_FREETYPE
+ #include "./imgui/misc/freetype/imgui_freetype.h"
+ #endif
+-#include "./imgui/imgui_internal.h"
++#include "imgui_internal.h"
+ #include "cimgui.h"
+ 
+ 
+@@ -23,7 +23,8 @@
+ #endif
+ 
+ #ifdef CIMGUI_USE_SDL3
+-#include "imgui_impl_sdl3.h"
++#include "backends/imgui_impl_sdl3.h"
++#include "backends/imgui_impl_sdlrenderer3.h"
+ #endif
+ 
+ #ifdef CIMGUI_USE_VULKAN
+diff --git i/cimgui_impl.h w/cimgui_impl.h
+index aa3b982..c33c494 100644
+--- i/cimgui_impl.h
++++ w/cimgui_impl.h
+@@ -114,6 +114,10 @@ CIMGUI_API bool ImGui_ImplSDL3_ProcessEvent(const SDL_Event* event);
+ CIMGUI_API void ImGui_ImplSDL3_SetGamepadMode(ImGui_ImplSDL3_GamepadMode mode,SDL_Gamepad** manual_gamepads_array,int manual_gamepads_count);
+ CIMGUI_API void ImGui_ImplSDL3_SetMouseCaptureMode(ImGui_ImplSDL3_MouseCaptureMode mode);
+ CIMGUI_API void ImGui_ImplSDL3_Shutdown(void);
++CIMGUI_API bool ImGui_ImplSDLRenderer3_Init(SDL_Renderer* renderer);
++CIMGUI_API void ImGui_ImplSDLRenderer3_Shutdown();
++CIMGUI_API void ImGui_ImplSDLRenderer3_NewFrame();
++CIMGUI_API void ImGui_ImplSDLRenderer3_RenderDrawData(ImDrawData* draw_data, SDL_Renderer* renderer);
+ 
+ #endif
+ #ifdef CIMGUI_USE_VULKAN
