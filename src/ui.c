@@ -3,6 +3,7 @@
 #include "SDL3/SDL_log.h"
 #include "files.h"
 #include "global.h"
+#include "log.h"
 #include "time.h"
 
 #include <cimgui.h>
@@ -42,7 +43,7 @@ static void SDLCALL file_callback(void *userdata, const char *const *filelist, i
 {
     if (!filelist)
     {
-        SDL_Log("An error occured: %s", SDL_GetError());
+        msg_logE(SDL_LOG_CATEGORY_AUDIO, "An error occured: %s", SDL_GetError());
         return;
     }
 
@@ -66,7 +67,8 @@ void draw_loaded_files()
 
     static int selected_index = -1;
 
-    ImGuiTableFlags table_flags = ImGuiTableFlags_RowBg | ImGuiTableFlags_BordersOuter | ImGuiTableFlags_BordersInner;
+    ImGuiTableFlags table_flags =
+        ImGuiTableFlags_RowBg | ImGuiTableFlags_BordersOuter | ImGuiTableFlags_BordersInner;
 
     if (igBeginTable("PlaylistTable", 2, table_flags, (ImVec2) {0, 0}, 0))
     {
@@ -83,7 +85,8 @@ void draw_loaded_files()
 
             bool is_selected = (selected_index == i);
 
-            if (igSelectable_Bool(names[i], is_selected, ImGuiSelectableFlags_SpanAvailWidth, (ImVec2) {0, 0}))
+            if (igSelectable_Bool(names[i], is_selected, ImGuiSelectableFlags_SpanAvailWidth,
+                                  (ImVec2) {0, 0}))
             {
                 selected_index = i;
             }

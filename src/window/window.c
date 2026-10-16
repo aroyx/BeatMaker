@@ -5,6 +5,7 @@
 
 #include "window.h"
 #include "../global.h"
+#include "../log.h"
 
 bool init_window()
 {
@@ -15,7 +16,7 @@ bool init_window()
                                         SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
     if (!global.window)
     {
-        SDL_LogError(SDL_LOG_CATEGORY_VIDEO, "Unable to create Window!\nSDL_Error: %s",
+        msg_logwE(SDL_LOG_CATEGORY_VIDEO, "Unable to create Window!\nSDL_Error: %s",
                      SDL_GetError());
         return false;
     }
@@ -23,8 +24,8 @@ bool init_window()
     global.renderer = SDL_CreateRenderer(global.window, nullptr);
     if (!global.renderer)
     {
-        SDL_LogError(SDL_LOG_CATEGORY_VIDEO, "Unable to create Renderer!\nSDL_Error: %s",
-                     SDL_GetError());
+        msg_logwE(SDL_LOG_CATEGORY_VIDEO, "Unable to create Renderer!\nSDL_Error: %s",
+                  SDL_GetError());
         return false;
     }
     SDL_SetRenderVSync(global.renderer, 1);
@@ -41,15 +42,15 @@ bool init_window()
 
     ImGuiStyle *style = igGetStyle();
     ImGuiStyle_ScaleAllSizes(style, main_scale);
-    style->FontScaleDpi         = main_scale;
-    style->FrameRounding = 3;
-    style->WindowRounding = 8;
-    style->PopupRounding = 8;
-    style->GrabRounding = 8;
-    style->MenuItemRounding = 8;
-    style->ScrollbarSize = 10;
+    style->FontScaleDpi      = main_scale;
+    style->FrameRounding     = 3;
+    style->WindowRounding    = 8;
+    style->PopupRounding     = 8;
+    style->GrabRounding      = 8;
+    style->MenuItemRounding  = 8;
+    style->ScrollbarSize     = 10;
     style->ScrollbarRounding = 10;
-    style->ScrollbarPadding = 2;
+    style->ScrollbarPadding  = 2;
 
     io->ConfigDpiScaleFonts     = true;
     io->ConfigDpiScaleViewports = true;

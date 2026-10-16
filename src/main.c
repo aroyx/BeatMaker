@@ -5,6 +5,7 @@
 #include <cimgui_impl.h>
 
 #include "global.h"
+#include "log.h"
 #include "time.h"
 #include "ui.h"
 #include "window/window.h"
@@ -13,8 +14,8 @@ bool init()
 {
     if (!SDL_Init(SDL_INIT_VIDEO))
     {
-        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Unable to initialise SDL!\nSDL_Error: %s",
-                     SDL_GetError());
+        msg_logwE(SDL_LOG_CATEGORY_APPLICATION, "Unable to initialise SDL!\nSDL_Error: %s",
+                  SDL_GetError());
         return false;
     }
     if (!init_state()) return false;

@@ -19,14 +19,17 @@ int current_files = 0;
 
 void add_file(const char *file_path)
 {
+    char msg[256];
     if (!SDL_GetPathInfo(file_path, NULL))
     {
-        SDL_LogError(SDL_LOG_CATEGORY_INPUT, "Unable to Find file: %s", file_path);
+        msg_logwE(SDL_LOG_CATEGORY_INPUT, "Unable to Find file!\n\tPath: %s", file_path);
         return;
     }
+
     if (file_already_added(file_path))
     {
-        SDL_Log("File already added! Path: %s", file_path);
+        msg_logwW(SDL_LOG_CATEGORY_INPUT, "File already added! Can't Add it again!\n\tPath: %s",
+                  file_path);
         return;
     }
 
@@ -51,7 +54,7 @@ void add_file(const char *file_path)
     if (last_slash != NULL) { files.names[current_files] = last_slash + 1; }
     else { files.names[current_files] = path; }
 
-    SDL_Log("File Added: %s", file_path);
+    msg_log("File Added: %s", file_path);
 
     current_files++;
 }

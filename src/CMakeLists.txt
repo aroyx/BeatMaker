@@ -8,6 +8,8 @@ add_executable(${PROJECT_NAME}
     time.h
     files.c
     files.h
+    log.c
+    log.h
     window/window.c
     window/window.h
 )
