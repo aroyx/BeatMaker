@@ -1,5 +1,6 @@
 #include "files.h"
 #include "SDL3/SDL_log.h"
+#include "log.h"
 
 #include <SDL3/SDL_filesystem.h>
 #include <stddef.h>
@@ -17,6 +18,28 @@ struct Files
 struct Files files;
 int current_files = 0;
 
+const char *formats[6] = {
+    "wav", "mp3", "ogg", "flac", "aac", "m4a",
+};
+
+bool is_valid_audio_file(const char *file_path)
+{
+    const char *dot   = strrchr(file_path, '.');
+    const char *slash = strrchr(file_path, '/');
+    if (!slash) slash = strrchr(file_path, '\\');
+
+    if (!dot || (slash && dot < slash)) { return false; }
+
+    const char *ext = dot + 1;
+
+    for (int i = 0; i < 6; i++)
+    {
+        if (SDL_strcasecmp(ext, formats[i]) == 0) { return true; }
+    }
+
+    return false;
+}
+
 void add_file(const char *file_path)
 {
     char msg[256];
@@ -30,6 +53,12 @@ void add_file(const char *file_path)
     {
         msg_logwW(SDL_LOG_CATEGORY_INPUT, "File already added! Can't Add it again!\n\tPath: %s",
                   file_path);
+        return;
+    }
+
+    if (!is_valid_audio_file(file_path))
+    {
+        msg_logwW(SDL_LOG_CATEGORY_INPUT, "Invalid file format!\n\tPath: %s", file_path);
         return;
     }
 
