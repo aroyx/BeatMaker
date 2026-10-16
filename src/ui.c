@@ -64,11 +64,60 @@ void draw_loaded_files()
     int total_files    = 0;
     const char **names = get_file_names(&total_files);
 
-    for (int i = total_files - 1; i >= 0; i--)
+    static int selected_index = -1;
+
+    ImGuiTableFlags table_flags = ImGuiTableFlags_RowBg | ImGuiTableFlags_BordersOuter | ImGuiTableFlags_BordersInner;
+
+    if (igBeginTable("PlaylistTable", 2, table_flags, (ImVec2) {0, 0}, 0))
     {
-        if (igButton(names[i], (ImVec2_c) {})) {
-            remove_file_at(i);
+        igTableSetupColumn("Name", ImGuiTableColumnFlags_WidthStretch, 0.0f, 0);
+        igTableSetupColumn("", ImGuiTableColumnFlags_WidthFixed, 0.0f, 0);
+
+        for (int i = 0; i < total_files; i++)
+        {
+            igTableNextRow(0, 0);
+            igPushID_Int(i);
+
+            // Column 1: Name
+            igTableSetColumnIndex(0);
+
+            bool is_selected = (selected_index == i);
+
+            if (igSelectable_Bool(names[i], is_selected, ImGuiSelectableFlags_SpanAvailWidth, (ImVec2) {0, 0}))
+            {
+                selected_index = i;
+            }
+
+            if (igBeginPopupContextItem("TrackContextMenu", ImGuiPopupFlags_MouseButtonRight))
+            {
+                if (igMenuItem_Bool("Add To Editor", NULL, false, true)) {}
+                igSeparator();
+                if (igMenuItem_Bool("Remove", NULL, false, true))
+                {
+                    remove_file_at(i);
+                    igEndPopup();
+                    igPopID();
+                    break;
+                }
+                igEndPopup();
+            }
+
+            // Column 2: X
+            igTableSetColumnIndex(1);
+
+            if (igSmallButton("X"))
+            {
+                remove_file_at(i);
+
+                if (selected_index == i) selected_index = -1;
+
+                igPopID();
+                break;
+            }
+
+            igPopID();
         }
+        igEndTable();
     }
 }
 
@@ -84,8 +133,6 @@ void ui_draw()
 
         draw_loaded_files();
 
-        // draw these in teh bottom
-        igSetCursorPosY(igGetWindowHeight() - 50);
         igSeparatorText("Misc");
         igTextWrapped("FrameTime: %.3fms", get_frametime());
     }
