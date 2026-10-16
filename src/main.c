@@ -5,6 +5,8 @@
 #include <cimgui_impl.h>
 
 #include "global.h"
+#include "time.h"
+#include "ui.h"
 #include "window/window.h"
 
 bool init()
@@ -26,28 +28,40 @@ void quit()
     SDL_Quit();
 }
 
+void prepare_draw()
+{
+    SDL_SetRenderDrawColor(global.renderer, 10, 160, 230, 255);
+    SDL_RenderClear(global.renderer);
+
+    ui_prepare_draw();
+}
+
+void draw()
+{
+    igRender();
+    ImDrawData *draw_data = igGetDrawData();
+    const bool is_minimized =
+        (draw_data->DisplaySize.x <= 0.0f || draw_data->DisplaySize.y <= 0.0f);
+    ImGui_ImplSDLRenderer3_RenderDrawData(draw_data, global.renderer);
+
+    end_frame_track_time();
+
+    SDL_RenderPresent(global.renderer);
+}
+
 int main()
 {
     if (!init()) { return EXIT_FAILURE; }
 
     while (!global.quit)
     {
+        start_frame_track_time();
         poll_events();
+        prepare_draw();
 
-        SDL_SetRenderDrawColor(global.renderer, 10, 160, 230, 255);
-        SDL_RenderClear(global.renderer);
+        ui_draw();
 
-        ImGui_ImplSDL3_NewFrame();
-        ImGui_ImplSDLRenderer3_NewFrame();
-        igNewFrame();
-
-        igShowDemoWindow(nullptr);
-
-        igRender();
-        ImDrawData* draw_data = igGetDrawData();
-        const bool is_minimized = (draw_data->DisplaySize.x <= 0.0f || draw_data->DisplaySize.y <= 0.0f);
-        ImGui_ImplSDLRenderer3_RenderDrawData(draw_data, global.renderer);
-        SDL_RenderPresent(global.renderer);
+        draw();
     }
 
     quit();

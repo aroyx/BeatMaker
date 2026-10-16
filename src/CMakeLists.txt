@@ -2,6 +2,12 @@ add_executable(${PROJECT_NAME}
     main.c
     global.c
     global.h
+    ui.c
+    ui.h
+    time.c
+    time.h
+    files.c
+    files.h
     window/window.c
     window/window.h
 )
@@ -42,6 +48,8 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
 )
 
-if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-    target_link_options(${PROJECT_NAME} PRIVATE "-static-libstdc++" "-static-libgcc")
+if(STATIC_BUILD)
+    if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+        target_link_options(${PROJECT_NAME} PRIVATE "-static-libstdc++" "-static-libgcc")
+    endif()
 endif()

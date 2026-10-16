@@ -1,2 +1,5 @@
 .cache/
 build/
+
+src/vector.c
+src/vector.h
