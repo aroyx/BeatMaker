@@ -34,6 +34,7 @@ bool init_window()
     ImGuiIO *io = igGetIO_Nil();
     (void)io;
     io->ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+    io->ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
     io->ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
     igStyleColorsDark(NULL);
@@ -41,6 +42,15 @@ bool init_window()
     ImGuiStyle *style = igGetStyle();
     ImGuiStyle_ScaleAllSizes(style, main_scale);
     style->FontScaleDpi         = main_scale;
+    style->FrameRounding = 3;
+    style->WindowRounding = 8;
+    style->PopupRounding = 8;
+    style->GrabRounding = 8;
+    style->MenuItemRounding = 8;
+    style->ScrollbarSize = 10;
+    style->ScrollbarRounding = 10;
+    style->ScrollbarPadding = 2;
+
     io->ConfigDpiScaleFonts     = true;
     io->ConfigDpiScaleViewports = true;
 
