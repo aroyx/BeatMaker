@@ -20,7 +20,7 @@ else()
     target_link_libraries(${PROJECT_NAME} PRIVATE SDL3::SDL3-shared)
 endif()
 
-target_link_libraries(${PROJECT_NAME} PRIVATE cimgui)
+target_link_libraries(${PROJECT_NAME} PRIVATE cimgui cimplot)
 target_compile_definitions(${PROJECT_NAME}  PUBLIC CIMGUI_DEFINE_ENUMS_AND_STRUCTS)
 
 if(WIN32)

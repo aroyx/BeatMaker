@@ -60,7 +60,7 @@ if(imgui_ADDED)
     target_compile_definitions(imgui PUBLIC "IMGUI_IMPL_API=extern \"C\"")
     target_include_directories(imgui PUBLIC ${imgui_SOURCE_DIR})
 
-    if(SDL_STATIC)
+    if(STATIC_BUILD)
         target_link_libraries(imgui PUBLIC SDL3::SDL3-static)
     else()
         target_link_libraries(imgui PUBLIC SDL3::SDL3-shared)
@@ -97,4 +97,42 @@ if(cimgui_ADDED)
     
     target_include_directories(cimgui PUBLIC ${cimgui_SOURCE_DIR})
     target_link_libraries(cimgui PUBLIC imgui)
+endif()
+
+log_pkg("cimplot")
+
+CPMAddPackage(
+    NAME implot
+    VERSION 1.1
+    URL https://github.com/epezent/implot/archive/851cdbdd60d1dfb64c23e987969694de0f547a6b.zip
+    URL_HASH SHA256=a05d63c38adec2f6ef3ee986cd2fa12c17d4b20c617c30f361c1222b29b82511
+    DOWNLOAD_ONLY YES
+)
+
+CPMAddPackage(
+    NAME cimplot
+    VERSION 1.1
+    URL https://github.com/cimgui/cimplot/archive/1894cd216ae360e2423762cc52ea5e619abb7cec.zip
+    URL_HASH SHA256=dab0d3468d596802266cfdb094491f5092e5ad510f41c6632055c66fa0eafa86
+    DOWNLOAD_ONLY YES
+    PATCHES patches/cimplot.patch
+)
+
+if(cimplot_ADDED)
+    file(
+        GLOB
+        cimplot_sources
+        ${cimplot_SOURCE_DIR}/cimplot.cpp
+        ${implot_SOURCE_DIR}/implot.h
+        ${implot_SOURCE_DIR}/implot_internal.h
+        ${implot_SOURCE_DIR}/implot.cpp
+        ${implot_SOURCE_DIR}/implot_items.cpp
+        ${implot_SOURCE_DIR}/implot_demo.cpp
+    )
+    add_library(cimplot STATIC ${cimplot_sources})
+
+    target_include_directories(cimplot PUBLIC ${cimplot_SOURCE_DIR} ${implot_SOURCE_DIR})
+
+    target_link_libraries(cimplot PUBLIC cimgui)
+    # target_link_libraries(cimplot PUBLIC cimplot cimgui)
 endif()
